@@ -13,14 +13,14 @@ msg() {
 
 start_service() {
 	# The ruleset folder is used from tmpfs
-	if [ ! -d /tmp/clash/ruleset ]; then
-		mkdir -p /tmp/clash/ruleset
-		msg "The folder '/tmp/clash/ruleset' was created"
+	if [ ! -d /opt/clash/ ]; then
+		mkdir -p /opt/clash/
+		msg "The folder '/opt/clash/' was created"
 	fi
-	if [ ! -L /opt/clash/ruleset ] || [ "$(readlink /opt/clash/ruleset)" != "/tmp/clash/ruleset" ]; then
-		rm -rf /opt/clash/ruleset
-		ln -s /tmp/clash/ruleset /opt/clash/ruleset
-		msg "Created a symlink from '/tmp/clash/ruleset' to '/opt/clash/ruleset'"
+	if [ ! -L /opt/clash/ruleset ] || [ "$(readlink /www/tinyfm/)" != "/opt/clash/" ]; then
+		rm -rf /www/tinyfm/
+		ln -s /opt/clash/ /www/tinyfm/
+		msg "Created a symlink from '/opt/clash/' to '/www/tinyfm/'"
 	fi
 	
  	/opt/clash/bin/clash -d /opt/clash -t
