@@ -17,8 +17,7 @@ start_service() {
 		mkdir -p /opt/clash/
 		msg "The folder '/opt/clash/' was created"
 	fi
-	if [ ! -L /opt/clash/ruleset ] || [ "$(readlink /www/tinyfm/)" != "/opt/clash/" ]; then
-		rm -rf /www/tinyfm/
+	if [ ! -L /www/tinyfm/ ] || [ "$(readlink /www/tinyfm/)" != "/opt/clash/" ]; then
 		ln -s /opt/clash/ /www/tinyfm/
 		msg "Created a symlink from '/opt/clash/' to '/www/tinyfm/'"
 	fi
