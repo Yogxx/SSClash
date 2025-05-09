@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PACKAGE_NAME: luci-app-ssclash
-      SDK_URL_PATH: https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/
+      SDK_URL_PATH: https://downloads.openwrt.org/releases/24.10.1/targets/armsr/armv8/
       SDK_NAME: -sdk-
     steps:
       - uses: actions/checkout@v2
