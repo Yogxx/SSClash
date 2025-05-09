@@ -13,12 +13,6 @@ msg() {
 
 start_service() {
 	# The ruleset folder is used from tmpfs
-	if [ ! -d /opt/clash/ ]; then
-		mkdir -p /opt/clash/
-                ln -s /opt/clash/ /www/tinyfm/
-		msg "The folder '/opt/clash/' was created"
-	fi
-	
  	/opt/clash/bin/clash -d /opt/clash -t
 	if [ $? -ne 0 ]; then
 		msg "Clash instance is not started"
