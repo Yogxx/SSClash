@@ -14,7 +14,7 @@ on:
 jobs:
   release:
     name: Build and Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       PACKAGE_NAME: luci-app-ssclash
       SDK_URL_PATH: https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/
