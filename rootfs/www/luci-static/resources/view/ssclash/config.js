@@ -57,15 +57,42 @@ async function toggleService() {
 	window.location.reload();
 }
 
-async function openDashboard() {
+async function restartService() {
+	const running = await getServiceStatus();
+	if (running) {
+		await stopService();
+	}
+	await startService();
+	window.location.reload();
+}
+
+async function Yacd() {
 	let newWindow = window.open('', '_blank');
 	const running = await getServiceStatus();
 	if (running) {
 		let port = '9090';
 		let path = 'ui';
+		let yacd = 'yacd';
 		let protocol = window.location.protocol;
 		let hostname = window.location.hostname;
-		let url = `${protocol}//${hostname}:${port}/${path}/?hostname=${hostname}&port=${port}`;
+		let url = `${protocol}//${hostname}:${port}/${path}/${yacd}?hostname=${hostname}&port=${port}`;
+		newWindow.location.href = url;
+	} else {
+		newWindow.close();
+		alert(_('Service is not running.'));
+	}
+}
+
+async function Zash() {
+	let newWindow = window.open('', '_blank');
+	const running = await getServiceStatus();
+	if (running) {
+		let port = '9090';
+		let path = 'ui';
+		let yacd = 'zashboard';
+		let protocol = window.location.protocol;
+		let hostname = window.location.hostname;
+		let url = `${protocol}//${hostname}:${port}/${path}/${yacd}?hostname=${hostname}&port=${port}`;
 		newWindow.location.href = url;
 	} else {
 		newWindow.close();
@@ -119,21 +146,37 @@ return view.extend({
 		const view = E([
 			E('button', {
 				'class': 'btn',
-				'click': openDashboard
-			}, _('Open Dashboard')),
+				'click': Yacd,
+				'style': 'margin-left: 10px; color: white; background: grey;'
+			}, _('Yacd')),
+			
+			E('button', {
+				'class': 'btn',
+				'click': Zash,
+				'style': 'margin-left: 10px; color: white; background: grey;'
+			}, _('Zash')),
+			
 			(startStopButton = E('button', {
 				'class': 'btn',
 				'click': toggleService,
-				'style': 'margin-left: 10px;'
-			}, running ? _('Stop service') : _('Start service'))),
+				'style': 'margin-left: 10px; color: white; background: grey;'
+			}, running ? _('Stop') : _('Start'))),
+			
+			E('button', {
+				'class': 'btn',
+				'click': restartService,
+				'style': 'margin-left: 10px; color: white; background: grey;'
+			}, _('Restart')),
+			
 			E('span', {
 				'style': running ? 'color: green; margin-left: 10px;' : 'color: red; margin-left: 10px;'
-			}, running ? _('Clash is running') : _('Clash stopped')),
-			E('h2', _('Clash config')),
-			E('p', { 'class': 'cbi-section-descr' }, _('Your current Clash config. When applied, the changes will be saved and the service will be restarted.')),
+			}, running ? _('<strong>RUNNING</strong>') : _('<strong>STOP</strong>')),
+			
+			E('h2', _('<strong>SSClash</strong>')),
+			E('p', { 'class': 'cbi-section-descr' }, _('<strong>Super Simple Clash aka SSCLASH</strong>')),
 			E('div', {
 				'id': 'editor',
-				'style': 'width: 100%; height: 640px;'
+				'style': 'width: 100%; height: 510px;'
 			})
 		]);
 
@@ -144,3 +187,4 @@ return view.extend({
 	handleSave: null,
 	handleReset: null
 });
+		      
