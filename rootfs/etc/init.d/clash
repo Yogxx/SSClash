@@ -12,22 +12,24 @@ msg() {
 }
 
 start_service() {
-	# The ruleset folder is used from tmpfs
-	if [ ! -d /tmp/clash/ruleset ]; then
-		mkdir -p /tmp/clash/ruleset
-		msg "The folder '/tmp/clash/ruleset' was created"
-	fi
-	if [ ! -L /opt/clash/ruleset ] || [ "$(readlink /opt/clash/ruleset)" != "/tmp/clash/ruleset" ]; then
-		rm -rf /opt/clash/ruleset
-		ln -s /tmp/clash/ruleset /opt/clash/ruleset
-		msg "Created a symlink from '/tmp/clash/ruleset' to '/opt/clash/ruleset'"
-	fi
-	
+
  	/opt/clash/bin/clash -d /opt/clash -t
-	if [ $? -ne 0 ]; then
-		msg "Clash instance is not started"
-		return
-	fi
+        if [ $? -ne 0 ]; then
+        	msg "Clash instance failed to start: invalid config or missing files"
+
+        	# Tulis file error HTML
+        	cat << EOF > /www/error-clash.html
+        	<div style="position: fixed; top: 20px; right: 20px; background: #f44336; color: white; padding: 15px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 9999;">
+	        	<b>Clash Error:</b> Gagal memulai Clash! Cek konfigurasi Anda.
+        	</div>
+        EOF
+
+        	return
+        fi
+
+        # Jika berhasil, pastikan pesan error dihapus
+        rm -f /www/error-clash.html
+
 
 	procd_open_instance
 	procd_set_param command /opt/clash/bin/clash -d /opt/clash
