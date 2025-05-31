@@ -7,15 +7,15 @@ return view.extend({
         {
             path: '/www/tinyfilemanager',
             urls: [
-                '/tinyfilemanager/tinyfilemanager.php?p=etc%2Fssclash',
-                '/tinyfilemanager/index.php?p=etc%2Fssclash'
+                '/tinyfilemanager/tinyfilemanager.php?p=opt%2Fclash',
+                '/tinyfilemanager/index.php?p=opt%2Fclash'
             ]
         },
         {
             path: '/www/tinyfm',
             urls: [
-                '/tinyfm/tinyfm.php?p=etc%2Fssclash',
-                '/tinyfm/index.php?p=etc%2Fssclash'
+                '/tinyfm/tinyfm.php?p=opt%2Fclash',
+                '/tinyfm/index.php?p=opt%2Fclash'
             ]
         }
     ],
