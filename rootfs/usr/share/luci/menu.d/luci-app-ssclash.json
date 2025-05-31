@@ -10,15 +10,23 @@
 		}
 	},
 	"admin/services/ssclash/config": {
-		"title": "Config",
+		"title": "CONFIG",
 		"order": 10,
 		"action": {
 			"type": "view",
 			"path": "ssclash/config"
 		}
 	},
+	"admin/services/ssclash/advancededitor": {
+		"title": "ADVANCED EDITOR",
+		"order": 15,
+		"action": {
+			"type": "view",
+			"path": "ssclash/advancededitor"
+		}
+	},
 	"admin/services/ssclash/log": {
-		"title": "Log",
+		"title": "LOG",
 		"order": 20,
 		"action": {
 			"type": "view",
