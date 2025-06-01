@@ -1,142 +1,121 @@
-mode: rule
-ipv6: false
-log-level: error
-allow-lan: false
+redir-port: 7891
 tproxy-port: 7894
-unified-delay: true
+port: 8080
+socks-port: 1080
+mixed-port: 7890
+mode: rule
+log-level: silent
+allow-lan: true
 tcp-concurrent: true
+unified-delay: true
+geodata-loader: memconservative
+keep-alive-interval: 15
+keep-alive-idle: 600
+disable-keep-alive: false
 external-controller: 0.0.0.0:9090
-external-ui: ./ui
-
-# DNS server settings
-# This section is optional. When not present, the DNS server will be disabled.
+secret: ''
+bind-address: 0.0.0.0
+external-ui: "ui"
+enable-process: true
+find-process-mode: always
+ipv6: false
+experimental:
+  quic-go-disable-gso: true
+  quic-go-disable-ecn: true
 dns:
   enable: true
-  listen: 0.0.0.0:7874
   ipv6: false
-  # Bootstrap DNS
-  default-nameserver: ['1.1.1.1', '1.0.0.1', '8.8.8.8', '8.8.4.4']
-  # Upstream DNS
-  nameserver: ['https://dns10.quad9.net/dns-query', 'https://dns.aa.net.uk/dns-query']
-
-# find-process-mode: off
-# global-client-fingerprint: chrome
-
-profile:
-  store-selected: true
-  store-fake-ip: true
-
-# Provides a default traffic mark for outbound connections on Linux
-routing-mark: 2 # Prevent cyclic redirection
-
+  enhanced-mode: redir-host
+#  fake-ip-range: 198.18.0.1/16
+  listen: 0.0.0.0:7874
+  respect-rules: true
+  default-nameserver:
+    - "system"
+  nameserver:
+    - "208.67.222.222"
+    - "223.5.5.5"
+  proxy-server-nameserver:
+    - "system"
+    #- "112.215.198.254"
+    #- "112.215.198.248"
+#  fake-ip-filter-mode: blacklist
+#  fake-ip-filter:
+#    - "+.lan"
+#    - "+.local"
+#    - "google.com"
+#    - "*.google.com"
+tun:
+  enable: true
+  auto-route: false
+  auto-redirect: false
+  auto-detect-interface: false
+  device: Meta
+  stack: system
+  mtu: 1500
+  gso: true
+  gso-max-size: 65536
+  endpoint-independent-nat: true
+  dns-hijack:
+    - "tcp://any:53"
+    - "udp://any:53"
 sniffer:
   enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
   sniff:
     HTTP:
-      ports: [80, 8080-8880]
+      port:
+        - "80"
+        - "8080"
       override-destination: true
     TLS:
-      ports: [443, 8443]
-    # QUIC:
-    #   ports: [443, 8443]
+      port:
+        - "443"
+        - "8443"
+profile:
+  store-selected: true
+#  store-fake-ip: true
+  force-domain:
+    - "+.netflix.com"
   skip-domain:
-    - 'Mijia Cloud'
-
-proxies:
-  # vless
-  - name: 'XX-reality' # change it
-    type: vless
-    server: xx-reality-server-IP # change it
-    port: 443
-    uuid: 528aeb97-a633-468d-81f7-8185d26bcb64 # change it
-    network: tcp
-    tls: true
-    udp: true
-    flow: xtls-rprx-vision
-    servername: masking-domain.example.com # change it
-    reality-opts:
-      public-key: 2R_qtReOBExLOx1aZj8s4N8x-Ru_wbo-o2neemZEDB0 # change it
-      short-id: ae380de2eeded283 # change it
-    client-fingerprint: chrome
-
-  - name: 'YY-reality' # change it
-    type: vless
-    server: yy-reality-server-IP # change it
-    port: 443
-    uuid: 3f0d4ce6-e4fe-46f9-804c-cce633e22785 # change it
-    network: tcp
-    tls: true
-    udp: true
-    flow: xtls-rprx-vision
-    servername: masking-domain.example.org # change it
-    reality-opts:
-      public-key: beAHvGPT-mhlYQAvX7u_rQQfnJqTXaStmRFkTnkUolE # change it
-      short-id: 0890fec52c6dd1ca # change it
-    client-fingerprint: chrome
-
-proxy-groups:
-  # Select (used for selecting proxy or proxy group)
-  - name: PROXY
-    type: select
-    # disable-udp: true
-    proxies: [XX-reality, YY-reality] # change it, add the others
-
-  # Fallback
-  - name: FALLBACK
-    type: fallback
-    proxies: [XX-reality, YY-reality] # change it, add the others
-    url: 'https://www.gstatic.com/generate_204' # or https://cp.cloudflare.com/generate_204
-    interval: 300
-
-  # # Load-balance
-  # - name: LB-PROXY
-  #   type: load-balance
-  #   proxies: [XX-reality, YY-reality] # change it, add the others
-  #   url: 'https://www.gstatic.com/generate_204'
-  #   interval: 300
-  #   strategy: consistent-hashing # or round-robin
-
+    - "+.facebook.com"
 rule-providers:
-  direct-domain:
-    behavior: classical
+  R_NSFW:
     type: http
-    format: text
-    url: 'https://YOUR_URL/direct-domain.list' # change it
-    interval: 1800
-    path: ./ruleset/direct-domain.txt
-  direct-ip:
-    behavior: classical
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/refs/heads/release/nsfw.mrs"
+    path: "./rules/nsfw.mrs"
+    interval: 86400
+  R_ADS_ALL:
     type: http
-    format: text
-    url: 'https://YOUR_URL/direct-ip.list' # change it
-    interval: 1800
-    path: ./ruleset/direct-ip.txt
-  proxy-domain:
-    behavior: classical
-    type: http
-    format: text
-    url: 'https://YOUR_URL/proxy-domain.list' # change it
-    interval: 1800
-    path: ./ruleset/proxy-domain.txt
-  proxy-ip:
-    behavior: classical
-    type: http
-    format: text
-    url: 'https://YOUR_URL/proxy-ip.list' # change it
-    interval: 1800
-    path: ./ruleset/proxy-ip.txt
-  antifilter-ip:
-    behavior: classical
-    type: http
-    format: text
-    url: 'https://YOUR_URL/antifilter-ip.list' # change it
-    interval: 43200
-    path: ./ruleset/antifilter-ip.txt
-
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/refs/heads/release/category-ads-all.mrs"
+    path: "./rules/category-ads-all.mrs"
+    interval: 86400
+proxy-providers:
+  Proxy:
+    type: file
+    path: "./proxy/Akun.yaml"
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 60
+proxy-groups:
+  - name: Internet
+    type: select
+    disable-udp: false
+    use:
+      - Proxy
+  - name: FallBack
+    type: fallback
+    disable-udp: false
+    use:
+      - Proxy
+    url: https://www.gstatic.com/generate_204
+    interval: 60
 rules:
-  - RULE-SET,direct-domain,DIRECT
-  - RULE-SET,direct-ip,DIRECT
-  - RULE-SET,proxy-domain,PROXY
-  - RULE-SET,proxy-ip,PROXY
-  - RULE-SET,antifilter-ip,PROXY
-  - MATCH,DIRECT
+  - RULE-SET,R_ADS_ALL,REJECT
+  - RULE-SET,R_NSFW,REJECT
+  - MATCH,GLOBAL
