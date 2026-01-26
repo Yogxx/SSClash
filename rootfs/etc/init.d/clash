@@ -5,12 +5,8 @@ STOP=79
 USE_PROCD=1
 
 CLASH_DIR="/opt/clash"
-CLASH_BIN="${CLASH_DIR}/bin/clash"
+CLASH_BIN="/usr/bin/mihomo"
 CLASH_RULES="${CLASH_DIR}/bin/clash-rules"
-RULESET_TMPFS="/tmp/clash/ruleset"
-RULESET_LINK="${CLASH_DIR}/ruleset"
-PROXY_PROVIDERS_TMPFS="/tmp/clash/proxy_providers"
-PROXY_PROVIDERS_LINK="${CLASH_DIR}/proxy_providers"
 
 # Function to log messages
 msg() {
@@ -26,47 +22,6 @@ check_files() {
 
 	if [ ! -f "$CLASH_RULES" ]; then
 		msg "WARNING: Clash rules script not found at $CLASH_RULES"
-	fi
-
-	return 0
-}
-
-# Function to set up clash directories
-setup_clash_directories() {
-	# Setup ruleset
-	if [ ! -d "$RULESET_TMPFS" ]; then
-		if ! mkdir -p "$RULESET_TMPFS"; then
-			msg "ERROR: Failed to create directory $RULESET_TMPFS"
-			return 1
-		fi
-		msg "Created directory '$RULESET_TMPFS'"
-	fi
-
-	if [ ! -L "$RULESET_LINK" ] || [ "$(readlink "$RULESET_LINK")" != "$RULESET_TMPFS" ]; then
-		rm -rf "$RULESET_LINK"
-		if ! ln -s "$RULESET_TMPFS" "$RULESET_LINK"; then
-			msg "ERROR: Failed to create symlink from '$RULESET_TMPFS' to '$RULESET_LINK'"
-			return 1
-		fi
-		msg "Created symlink from '$RULESET_TMPFS' to '$RULESET_LINK'"
-	fi
-
-	# Setup proxy_providers
-	if [ ! -d "$PROXY_PROVIDERS_TMPFS" ]; then
-		if ! mkdir -p "$PROXY_PROVIDERS_TMPFS"; then
-			msg "ERROR: Failed to create directory $PROXY_PROVIDERS_TMPFS"
-			return 1
-		fi
-		msg "Created directory '$PROXY_PROVIDERS_TMPFS'"
-	fi
-
-	if [ ! -L "$PROXY_PROVIDERS_LINK" ] || [ "$(readlink "$PROXY_PROVIDERS_LINK")" != "$PROXY_PROVIDERS_TMPFS" ]; then
-		rm -rf "$PROXY_PROVIDERS_LINK"
-		if ! ln -s "$PROXY_PROVIDERS_TMPFS" "$PROXY_PROVIDERS_LINK"; then
-			msg "ERROR: Failed to create symlink from '$PROXY_PROVIDERS_TMPFS' to '$PROXY_PROVIDERS_LINK'"
-			return 1
-		fi
-		msg "Created symlink from '$PROXY_PROVIDERS_TMPFS' to '$PROXY_PROVIDERS_LINK'"
 	fi
 
 	return 0
@@ -170,9 +125,6 @@ start_service() {
 
 	# Check the required files
 	check_files || return 1
-
-	# Set up the directories (ruleset and proxy_providers)
-	setup_clash_directories || return 1
 
 	# Check Clash configuration
 	if ! "$CLASH_BIN" -d "$CLASH_DIR" -t; then
