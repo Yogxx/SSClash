@@ -18,6 +18,14 @@
 			"path": "ssclash/config"
 		}
 	},
+	"admin/services/ssclash/configeditor": {
+		"title": "Config Editor",
+		"order": 15,
+		"action": {
+			"type": "view",
+			"path": "ssclash/configeditor"
+		}
+	},
 	"admin/services/ssclash/settings": {
 		"title": "Settings",
 		"order": 20,
